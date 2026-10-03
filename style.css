@@ -8,6 +8,8 @@
 	--board-dark: #0d4e67;
 	--empty: #dce8e8;
 	--piece: #ef8354;
+	--player-red: #e63946;
+	--player-yellow: #ffd166;
 	--accent: #ef8354;
 }
 
@@ -84,6 +86,14 @@ h1 {
 .cell.filled {
 	background: var(--piece);
 	box-shadow: inset 0 -4px 6px rgba(143, 54, 25, 0.25), 0 2px 3px rgba(23, 32, 42, 0.18);
+}
+
+.cell.filled.player-red {
+	background: var(--player-red);
+}
+
+.cell.filled.player-yellow {
+	background: var(--player-yellow);
 }
 
 .status {
