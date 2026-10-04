@@ -7,6 +7,7 @@ const statusElement = document.querySelector('.status');
 
 const board = Array.from({ length: ROWS }, () => Array(COLUMNS).fill(null));
 let currentPlayer = 'red';
+let gameOver = false;
 
 function renderBoard() {
 	cells.forEach((cell, index) => {
@@ -20,11 +21,61 @@ function renderBoard() {
 	});
 }
 
+function hasWinningLine(row, column, player) {
+	const directions = [
+		[0, 1],
+		[1, 0],
+		[1, 1],
+		[1, -1],
+	];
+
+	return directions.some(([rowStep, columnStep]) => {
+		let count = 1;
+
+		for (const direction of [-1, 1]) {
+			let nextRow = row + rowStep * direction;
+			let nextColumn = column + columnStep * direction;
+
+			while (
+				nextRow >= 0 &&
+				nextRow < ROWS &&
+				nextColumn >= 0 &&
+				nextColumn < COLUMNS &&
+				board[nextRow][nextColumn] === player
+			) {
+				count += 1;
+				nextRow += rowStep * direction;
+				nextColumn += columnStep * direction;
+			}
+		}
+
+		return count >= 4;
+	});
+}
+
 function placePiece(column) {
+	if (gameOver) {
+		return;
+	}
+
 	for (let row = ROWS - 1; row >= 0; row -= 1) {
 		if (board[row][column] === null) {
-			board[row][column] = currentPlayer;
+			const player = currentPlayer;
+			board[row][column] = player;
 			renderBoard();
+
+			if (hasWinningLine(row, column, player)) {
+				gameOver = true;
+				statusElement.textContent = `¡Gana el jugador ${player === 'red' ? 'rojo' : 'amarillo'}!`;
+				return;
+			}
+
+			if (board.every((boardRow) => boardRow.every((cell) => cell !== null))) {
+				gameOver = true;
+				statusElement.textContent = '¡Empate! El tablero está lleno.';
+				return;
+			}
+
 			currentPlayer = currentPlayer === 'red' ? 'yellow' : 'red';
 			statusElement.textContent = `Turno del jugador ${currentPlayer === 'red' ? 'rojo' : 'amarillo'}`;
 			return;
