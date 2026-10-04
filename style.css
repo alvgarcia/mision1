@@ -96,12 +96,63 @@ h1 {
 	background: var(--player-yellow);
 }
 
+.cell.just-placed {
+	animation: drop-in 240ms ease-out;
+}
+
+@keyframes drop-in {
+	from {
+		opacity: 0.5;
+		transform: translateY(-18px) scale(0.8);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
 .status {
 	margin: 28px 0 0;
 	color: var(--muted);
 	font-size: 0.92rem;
 	font-weight: 700;
 	text-align: center;
+}
+
+.restart-button {
+	display: block;
+	margin: 18px auto 0;
+	padding: 11px 20px;
+	border: 0;
+	border-radius: 999px;
+	background: var(--board-dark);
+	color: white;
+	font: inherit;
+	font-weight: 700;
+	cursor: pointer;
+	transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.restart-button:hover {
+	transform: translateY(-2px);
+	background: var(--board);
+}
+
+.restart-button:focus-visible {
+	outline: 3px solid var(--accent);
+	outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.cell,
+	.restart-button {
+		transition: none;
+	}
+
+	.cell.just-placed {
+		animation: none;
+	}
 }
 
 @media (max-width: 520px) {

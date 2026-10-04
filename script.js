@@ -4,12 +4,13 @@ const COLUMNS = 7;
 const boardElement = document.querySelector('.board');
 const cells = document.querySelectorAll('.cell');
 const statusElement = document.querySelector('.status');
+const restartButton = document.querySelector('.restart-button');
 
 const board = Array.from({ length: ROWS }, () => Array(COLUMNS).fill(null));
 let currentPlayer = 'red';
 let gameOver = false;
 
-function renderBoard() {
+function renderBoard(lastMove = null) {
 	cells.forEach((cell, index) => {
 		const row = Math.floor(index / COLUMNS);
 		const column = index % COLUMNS;
@@ -18,6 +19,7 @@ function renderBoard() {
 		cell.classList.toggle('filled', player !== null);
 		cell.classList.toggle('player-red', player === 'red');
 		cell.classList.toggle('player-yellow', player === 'yellow');
+		cell.classList.toggle('just-placed', index === lastMove);
 	});
 }
 
@@ -62,7 +64,7 @@ function placePiece(column) {
 		if (board[row][column] === null) {
 			const player = currentPlayer;
 			board[row][column] = player;
-			renderBoard();
+			renderBoard(row * COLUMNS + column);
 
 			if (hasWinningLine(row, column, player)) {
 				gameOver = true;
@@ -85,6 +87,14 @@ function placePiece(column) {
 	statusElement.textContent = `Esta columna está llena. Turno del jugador ${currentPlayer === 'red' ? 'rojo' : 'amarillo'}`;
 }
 
+function restartGame() {
+	board.forEach((row) => row.fill(null));
+	currentPlayer = 'red';
+	gameOver = false;
+	renderBoard();
+	statusElement.textContent = 'Turno del jugador rojo. ¡Empieza la partida!';
+}
+
 boardElement.addEventListener('click', (event) => {
 	const cell = event.target.closest('.cell');
 
@@ -92,3 +102,5 @@ boardElement.addEventListener('click', (event) => {
 		placePiece(Number(cell.dataset.column));
 	}
 });
+
+restartButton.addEventListener('click', restartGame);
